@@ -1,9 +1,9 @@
 'use strict';
 
 var gulp = require('gulp');
+var clean = require('gulp-clean');
 var jshint = require('gulp-jshint');
 var traceur = require('gulp-traceur');
-var clean = require('gulp-clean');
 
 gulp.task('default', ['clean'], function() {
 	gulp.start('build');
