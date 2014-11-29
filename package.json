@@ -1,0 +1,14 @@
+{
+  "name": "kraken",
+  "version": "0.0.0",
+  "scripts": {
+    "prepublish": "npm run build",
+    "start": "npm run build && node index.js",
+    "watch": "watchy -sw src -- npm run build",
+    "build": "traceur --dir src/ out/ --modules=commonjs --sourcemap"
+  },
+  "dependencies": {
+    "traceur": "0.0.41",
+    "watchy": "^0.4.4"
+  }
+}
