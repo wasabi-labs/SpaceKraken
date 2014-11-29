@@ -10,5 +10,10 @@
   "dependencies": {
     "traceur": "0.0.41",
     "watchy": "^0.4.4"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-clean": "^0.3.1",
+    "gulp-traceur": "^0.14.1"
   }
 }
