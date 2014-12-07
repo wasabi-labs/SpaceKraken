@@ -8,13 +8,18 @@
     "build": "traceur --dir src/ out/ --modules=commonjs --sourcemap"
   },
   "dependencies": {
-    "traceur": "0.0.41",
+    "traceur": "0.0.79",
     "watchy": "^0.4.4"
   },
   "devDependencies": {
     "gulp": "^3.8.10",
     "gulp-clean": "^0.3.1",
+    "gulp-header": "^1.2.2",
     "gulp-jshint": "^1.9.0",
-    "gulp-traceur": "^0.14.1"
+    "gulp-mocha": "^2.0.0",
+    "gulp-traceur": "^0.14.1",
+    "merge-stream": "^0.1.6",
+    "mocha": "^2.0.1",
+    "should": "^4.3.0"
   }
 }
