@@ -1,9 +1,9 @@
 export default class {
     constructor(width, height) {
-        if (width < 1) {
+        if (! width || width < 1) {
             throw new Error('Width must be bigger than 0');
         }
-        if (height < 1) {
+        if (! height || height < 1) {
             throw new Error('Height must be bigger than 0');
         }
 
@@ -14,10 +14,10 @@ export default class {
     }
 
     addPlanet(planet, x, y) {
-        if (x < 0 || x >= this.width) {
+        if (x === undefined || x < 0 || x >= this.width) {
             throw new Error('X is out of bounds');
         }
-        if (y < 0 || y >= this.height) {
+        if (y === undefined || y < 0 || y >= this.height) {
             throw new Error('Y is out of bounds');
         }
           
@@ -49,7 +49,7 @@ export default class {
     }
 
     isConnected(planet1, planet2) {
-        return this._connection[planet1.name][planet2.name];
+        return !! this._connections[planet1.name] && !! this._connections[planet1.name][planet2.name];
     }
 
     getConnections(planet) {
@@ -63,7 +63,7 @@ export default class {
     getPlanets(player) {
         let result = [];
 
-        Object.keys(this._planets).forEach(function(key) {
+        Object.keys(this._planets).forEach(key => {
             let planet = this._planets[key].planet;
             if (planet.player === player) {
                 result.push(planet);

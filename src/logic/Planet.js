@@ -8,7 +8,7 @@ export default class {
         if (! player) {
             throw new Error('Player is mandatory');
         }
-        if (size < 1) {
+        if (! size || size < 1) {
             throw new Error('Size must be bigger than 0');
         }
 
