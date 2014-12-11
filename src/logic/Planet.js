@@ -15,6 +15,7 @@ export default class {
         this.player = player;
         this.name = 'planet-' + id;
         this.size = size;
+        this.troops = 0;
 
         id++;
     }
