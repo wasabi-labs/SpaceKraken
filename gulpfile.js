@@ -34,23 +34,32 @@ gulp.task('lint', function() {
 
 gulp.task('build', ['lint'], function() {
     return browserify({
-            entries: [es6ify.runtime, './src/index.js'],
+            entries: [es6ify.runtime, './app/src/index.js'],
             debug: true
         })
         .transform(es6ify)
         .bundle()
         .pipe(source(pack.name + '.js'))
-        .pipe(gulp.dest('./out/build'));
+        .pipe(gulp.dest('./dist/app/js'));
+});
+
+gulp.task('resources', function() {
+    gulp.src(['app/**/*', '!app/src/**'])
+        .pipe(gulp.dest('dist/app'));
+});
+
+gulp.task('package', ['clean'], function() {
+    gulp.start(['build', 'resources']);
 });
 
 gulp.task('test', function() {
-    var src = gulp.src('src/**/*.js')
+    var src = gulp.src('app/src/**/*.js')
         .pipe(traceur())
-        .pipe(gulp.dest('out/src'));
+        .pipe(gulp.dest('dist/test/src'));
     var test = gulp.src('test/*/**/*.js')
         .pipe(traceur())
         .pipe(header(fs.readFileSync('test/Runner.js', 'utf8')))
-        .pipe(gulp.dest('out/test'));
+        .pipe(gulp.dest('dist/test/test'));
     return merge(src, test)
         .pipe(filter(function(file) {
             return /test/.test(file.path);
