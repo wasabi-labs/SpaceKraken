@@ -3,6 +3,7 @@
 var gulp = require('gulp');
 
 var fs = require('fs');
+var path = require('path');
 var clean = require('gulp-clean');
 var jshint = require('gulp-jshint');
 var browserify = require('browserify');
@@ -14,10 +15,14 @@ var filter = require('gulp-filter');
 var merge = require('merge-stream');
 var mocha = require('gulp-mocha');
 
+var express = require('express');
+var lrserver = require('tiny-lr')();
+var livereload = require('connect-livereload');
+
 var pack = require('./package.json');
 
 gulp.task('default', ['clean'], function() {
-    gulp.start('build');
+    gulp.start('package');
 });
 
 gulp.task('clean', function () {
@@ -40,16 +45,7 @@ gulp.task('build', ['lint'], function() {
         .transform(es6ify)
         .bundle()
         .pipe(source(pack.name + '.js'))
-        .pipe(gulp.dest('./dist/app/js'));
-});
-
-gulp.task('resources', function() {
-    gulp.src(['app/**/*', '!app/src/**'])
-        .pipe(gulp.dest('dist/app'));
-});
-
-gulp.task('package', ['clean'], function() {
-    gulp.start(['build', 'resources']);
+        .pipe(gulp.dest('dist/app/js'));
 });
 
 gulp.task('test', function() {
@@ -62,9 +58,45 @@ gulp.task('test', function() {
         .pipe(gulp.dest('dist/test/test'));
     return merge(src, test)
         .pipe(filter(function(file) {
-            return /test/.test(file.path);
+            return ! /src/.test(file.path);
         }))
         .pipe(mocha({
             reporter: 'nyan'
         }));
+});
+
+gulp.task('resources', function() {
+    gulp.src(['app/**/*', '!app/src/**'])
+        .pipe(gulp.dest('dist/app'));
+});
+
+gulp.task('package', ['clean'], function() {
+    gulp.start(['build', 'resources']);
+});
+
+gulp.task('dev', ['clean', 'package'], function() {
+    var server = express();
+    var serverport = 8080;
+    var livereloadport = 35729;
+
+    server.use(livereload());
+    server.use(express.static('dist/app'));
+
+    server.listen(serverport);
+    lrserver.listen(livereloadport);
+
+    gulp.watch(['app/src/**/*.js'], ['build']);
+    gulp.watch(['app/**/*', '!app/src/**'], ['resources']);
+    gulp.watch(['test/**/*.js'], ['test']);
+
+    gulp.watch(['dist/app/**/*'], function(event) {
+        // `gulp.watch()` events provide an absolute path
+        // so we need to make it relative to the server root
+        var file = path.relative(__dirname, event.path);
+        lrserver.changed({
+            body: {
+                files: [file]
+            }
+        });
+    });
 });
