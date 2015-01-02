@@ -26,7 +26,7 @@ gulp.task('default', ['clean'], function() {
 });
 
 gulp.task('clean', function () {
-    return gulp.src('out', { read: false })
+    return gulp.src('dist', { read: false })
         .pipe(clean());
 });
 
@@ -42,7 +42,7 @@ gulp.task('build', ['lint'], function() {
             entries: [es6ify.runtime, './app/src/index.js'],
             debug: true
         })
-        .transform(es6ify)
+        .transform(es6ify.configure(/^(?!.*node_modules)+.+\.js$/))
         .bundle()
         .pipe(source(pack.name + '.js'))
         .pipe(gulp.dest('dist/app/js'));
