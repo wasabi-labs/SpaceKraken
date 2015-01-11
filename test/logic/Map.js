@@ -3,16 +3,18 @@ import Planet from '../../src/logic/Planet';
 import Map from '../../src/logic/Map';
 
 describe('Planet', function() {
-    let player;
+    let player1;
+    let player2;
     let planet1;
     let planet2;
     let planet3;
 
     before(function() {
-        player = new Player('Fran', '#FF0000');
-        planet1 = new Planet(player, 10);
-        planet2 = new Planet(player, 10);
-        planet3 = new Planet(player, 10);
+        player1 = new Player('Fran', '#FF0000');
+        player2 = new Player('Roberto', '#0000FF');
+        planet1 = new Planet(player1, 10);
+        planet2 = new Planet(player1, 10);
+        planet3 = new Planet(player2, 10);
     });
 
     it('must require a size', function() {
@@ -49,12 +51,27 @@ describe('Planet', function() {
 
         map.addPlanet(planet1, 0, 0);
         map.addPlanet(planet2, 5, 5);
-        
-        let planets = map.getPlanets(player);
+        map.addPlanet(planet3, 9, 9);
 
-        planets.should.have.length(2);
+        let planets = map.getPlanets();
+
+        planets.should.have.length(3);
         planets.should.containEql(planet1);
         planets.should.containEql(planet2);
+        planets.should.containEql(planet3);
+    });
+
+    it('should be able to retrieve planets from a specific player', function() {
+        let map = new Map(10, 10);
+
+        map.addPlanet(planet1, 0, 0);
+        map.addPlanet(planet2, 5, 5);
+        map.addPlanet(planet3, 9, 9);
+        
+        let planets = map.getPlanets(player2);
+
+        planets.should.have.length(1);
+        planets.should.containEql(planet3);
     });
 
     it('should check bounds when adding planets', function() {
@@ -102,6 +119,7 @@ describe('Planet', function() {
 
         map.addPlanet(planet1, 0, 0);
         map.addPlanet(planet2, 5, 5);
+        map.addPlanet(planet3, 9, 9);
 
         map.connect(planet1, planet2);
 
@@ -118,8 +136,6 @@ describe('Planet', function() {
 
         map.connect(planet1, planet2);
 
-        map.getConnections(planet1).should.be.eql({
-            [planet2.name]: true
-        });
+        map.getConnections(planet1).should.be.eql([planet2]);
     });
 });

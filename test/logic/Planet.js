@@ -26,6 +26,10 @@ describe('Planet', function() {
             return new Planet(player, 0);
         })
         .should.throw();
+        (function() {
+            return new Planet(player, 1.1);
+        })
+        .should.throw();
     });
 
     it('should have a name property', function() {

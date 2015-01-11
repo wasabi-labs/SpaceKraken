@@ -1,44 +1,56 @@
 import Map from './logic/Map';
+import Match from './logic/Match';
 import Player from './logic/Player';
 import Planet from './logic/Planet';
 
-import jquery from './lib/JQuery';
-import Babylon from './lib/Babylon';
+import Renderer from './render/MatchRenderer';
 
-let player = new Player('Fran', '#FF0000');
+// Initialize a sample match
+let player1 = new Player('Fran', '#FF0000');
+let player2 = new Player('Roberto', '#0000FF');
 
-let planet1 = new Planet(player, 1);
-let planet2 = new Planet(player, 1);
+let small = 0.3;
+let medium = 0.6;
+let big = 1;
 
-let map = new Map(10, 10);
+let planet1 = new Planet(player1, small);
+let planet2 = new Planet(player1, medium);
+let planet3 = new Planet(player1, medium);
+let planet4 = new Planet(player1, big);
+  
+let planet5 = new Planet(player2, small);
+let planet6 = new Planet(player2, medium);
+let planet7 = new Planet(player2, medium);
+let planet8 = new Planet(player2, big);
+let planet9 = new Planet(player2, big);
+  
+let map = new Map(20, 20);
+  
 map.addPlanet(planet1, 0, 0);
-map.addPlanet(planet2, 9, 9);
+map.addPlanet(planet2, 5, 3);
+map.addPlanet(planet3, 10, 8);
+map.addPlanet(planet4, 4, 6);
+map.addPlanet(planet5, 19, 19);
+map.addPlanet(planet6, 15, 14);
+map.addPlanet(planet7, 10, 12);
+map.addPlanet(planet8, 17, 17);
+map.addPlanet(planet9, 15, 9);
+  
+map.connect(planet1, planet2);
+map.connect(planet1, planet4);
+map.connect(planet2, planet3);
+map.connect(planet3, planet4);
+map.connect(planet3, planet6);
+map.connect(planet3, planet7);
+map.connect(planet3, planet9);
+map.connect(planet7, planet6);
+map.connect(planet7, planet8);
+map.connect(planet8, planet5);
+map.connect(planet8, planet6);
+map.connect(planet8, planet9);
+  
+let players = [player1, player2];
+let match = new Match(players, map);
 
-let canvas = document.getElementById("render");
-let engine = new Babylon.Engine(canvas, true);
-
-let scene = (function() {
-    let scene = new Babylon.Scene(engine);
-    scene.clearColor = new Babylon.Color3(0, 0, 0);
-
-    let camera = new Babylon.FreeCamera("camera1", new Babylon.Vector3(0, 5, -10), scene);
-    camera.setTarget(Babylon.Vector3.Zero());
-    camera.attachControl(canvas, false);
-
-    let light = new Babylon.HemisphericLight("light1", new Babylon.Vector3(0, 1, 0), scene);
-    light.intensity = .5;
-
-    let sphere = Babylon.Mesh.CreateSphere("sphere1", 16, 2, scene);
-    sphere.position.y = 1;
-
-    let ground = Babylon.Mesh.CreateGround("ground1", 6, 6, 2, scene);
-
-    return scene;
-})();
-
-engine.runRenderLoop(function() {
-    scene.render();
-});
-jquery(window).on('resize', function() {
-    engine.resize();
-});
+let canvas = document.getElementById('render');
+let renderer = new Renderer(canvas, match);

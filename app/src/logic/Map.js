@@ -53,7 +53,13 @@ export default class {
     }
 
     getConnections(planet) {
-        return this._connections[planet.name];
+        let result = [];
+
+        Object.keys(this._connections[planet.name]).forEach(key => {
+            result.push(this._planets[key].planet);
+        });
+
+        return result;
     }
 
     getPosition(planet) {
@@ -65,7 +71,7 @@ export default class {
 
         Object.keys(this._planets).forEach(key => {
             let planet = this._planets[key].planet;
-            if (planet.player === player) {
+            if (! player || planet.player === player) {
                 result.push(planet);
             }
         });

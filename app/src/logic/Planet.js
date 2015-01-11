@@ -8,8 +8,8 @@ export default class {
         if (! player) {
             throw new Error('Player is mandatory');
         }
-        if (! size || size < 1) {
-            throw new Error('Size must be bigger than 0');
+        if (! size || size < 0 || size > 1 ) {
+            throw new Error('Size must be between 0 and 1');
         }
 
         this.player = player;
