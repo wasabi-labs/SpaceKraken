@@ -7,9 +7,7 @@ import Planet from '../logic/Planet';
 
 import Renderer from '../render/MatchRenderer';
 
-export default ['$scope', function($scope) {
-    $scope.name = 'Fran';
-
+export default ['$scope', '$interval', function($scope, $interval) {
     // Initialize a sample match
     let player1 = new Player('Fran', '#FF0000');
     let player2 = new Player('Roberto', '#0000FF');
@@ -56,4 +54,34 @@ export default ['$scope', function($scope) {
   
     let players = [player1, player2];
     $scope.match = new Match(players, map);
+
+    // Set a clock to show the remaining turn time and force
+    // a turn end when the clock reaches 0.
+    $scope.clock = $scope.match.turnTime;
+    $scope.name = $scope.match.currentPlayer.name;
+
+    let start = Date.now();
+    let timer = $interval(function() {
+        let tick = Date.now();
+        $scope.clock = Math.max(
+            $scope.match.turnTime - Math.round((tick - start) / 1000),
+            0);
+        if ($scope.clock === 0) {
+            $scope.endTurn();
+        }
+    }, 250);
+    $scope.$on('$destroy', function() {
+        $interval.cancel(timer);
+    });
+
+    // On each turn end, update the UI for the next
+    // player.
+    $scope.endTurn = function() {
+        $scope.match.next();
+
+        start = Date.now();
+
+        $scope.clock = $scope.match.turnTime;
+        $scope.name = $scope.match.currentPlayer.name;
+    }
 }];
