@@ -19,10 +19,10 @@ describe('Match', function() {
         player1 = new Player('Fran', '#FF0000');
         player2 = new Player('Roberto', '#0000FF');
         players = [player1, player2];
-        planet1 = new Planet(player1, 10);
-        planet2 = new Planet(player1, 10);
-        planet3 = new Planet(player2, 10);
-        planet4 = new Planet(player2, 10);
+        planet1 = new Planet(player1, .50);
+        planet2 = new Planet(player1, .50);
+        planet3 = new Planet(player2, .50);
+        planet4 = new Planet(player2, .50);
 
         map = new Map(10, 10);
         map.addPlanet(planet1, 0, 0);
@@ -78,10 +78,8 @@ describe('Match', function() {
         match.move(planet2, planet3, 2).should.be.eql(true);
     });
 
-    it('should not be able to more troops than the planet contains by making many movements', function() {
-        match.move(planet2, planet3, 2).should.be.eql(true);
-        match.move(planet2, planet3, 3).should.be.eql(true);
-        match.move(planet2, planet3, 4).should.be.eql(true);
+    it('should not be able to move more troops than the planet contains by making many movements', function() {
+        match.move(planet2, planet3, 1).should.be.eql(true);
         match.move(planet2, planet3, 800).should.be.eql(false);
     });
 

@@ -1,5 +1,5 @@
-const TROOPS_GENERATION_FACTOR = 5;
-const TROOPS_HOSTING_FACTOR = 10;
+const TROOPS_GENERATION_FACTOR = 20;
+const TROOPS_HOSTING_FACTOR = 100;
 
 let id = 0;
 
@@ -8,7 +8,7 @@ export default class {
         if (! player) {
             throw new Error('Player is mandatory');
         }
-        if (! size || size < 0 || size > 1 ) {
+        if (! size || size <= 0 || size > 1 ) {
             throw new Error('Size must be between 0 and 1');
         }
 
@@ -21,11 +21,11 @@ export default class {
     }
 
     get troopsPerTurn() {
-        return this.size * TROOPS_GENERATION_FACTOR;
+        return Math.ceil(this.size * TROOPS_GENERATION_FACTOR);
     }
 
     get maximumTroops() {
-        return this.size * TROOPS_HOSTING_FACTOR;
+        return Math.ceil(this.size * TROOPS_HOSTING_FACTOR);
     }
 
     toString() {

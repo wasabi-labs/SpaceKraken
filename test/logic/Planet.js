@@ -7,12 +7,12 @@ describe('Planet', function() {
 
     before(function() {
         player = new Player('Fran', '#FF0000');
-        planet = new Planet(player, 10);
+        planet = new Planet(player, .10);
     });
 
     it('must require a player', function() {
         (function() {
-            return new Planet(null, 10);
+            return new Planet(null, .10);
         })
         .should.throw();
     });
@@ -37,7 +37,7 @@ describe('Planet', function() {
     });
 
     it('should generate a new name per planet', function() {
-        let other = new Planet(player, 10);
+        let other = new Planet(player, .10);
         planet.name.should.not.be.eql(other.name);
     });
 
@@ -58,10 +58,10 @@ describe('Planet', function() {
     });
 
     it('should calculate the troop generation factor ', function() {
-        planet.troopsPerTurn.should.be.eql(planet.size * 5);
+        planet.troopsPerTurn.should.be.eql(Math.ceil(planet.size * 20));
     });
 
     it('should calculate the troop hosting factor', function() {
-        planet.maximumTroops.should.be.eql(planet.size * 10);
+        planet.maximumTroops.should.be.eql(Math.ceil(planet.size * 100));
     });
 });

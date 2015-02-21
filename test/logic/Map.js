@@ -12,9 +12,9 @@ describe('Planet', function() {
     before(function() {
         player1 = new Player('Fran', '#FF0000');
         player2 = new Player('Roberto', '#0000FF');
-        planet1 = new Planet(player1, 10);
-        planet2 = new Planet(player1, 10);
-        planet3 = new Planet(player2, 10);
+        planet1 = new Planet(player1, .10);
+        planet2 = new Planet(player1, .10);
+        planet3 = new Planet(player2, .10);
     });
 
     it('must require a size', function() {
