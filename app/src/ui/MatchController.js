@@ -77,7 +77,13 @@ export default ['$scope', '$interval', function($scope, $interval) {
     // On each turn end, update the UI for the next
     // player.
     $scope.endTurn = function() {
-        $scope.match.next();
+        let actions = $scope.match.next();
+
+        // For each player action notify the result,
+        // play an animation, etc.
+        actions.forEach(function(action) {
+            console.log(action);
+        });
 
         start = Date.now();
 
