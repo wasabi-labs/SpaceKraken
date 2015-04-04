@@ -5,8 +5,6 @@ import Match from '../logic/Match';
 import Player from '../logic/Player';
 import Planet from '../logic/Planet';
 
-import Renderer from '../render/MatchRenderer';
-
 export default ['$scope', '$interval', function($scope, $interval) {
     // Initialize a sample match
     let player1 = new Player('Fran', '#FF0000');

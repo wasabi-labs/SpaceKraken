@@ -70,22 +70,40 @@ function factory(canvas, engine, match) {
     return scene;
 }
 
-export default class {
-    constructor(canvas, match) {
-        this._engine = new Babylon.Engine(canvas, true);
-        this._scene = factory(canvas, this._engine, match);
-        this._resizeHandler = () => {
-            this._engine.resize();
-        };
+export default [function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        transclude: true,
+        scope: {
+            model: '='
+        },
+        template: [
+            '<div class="scene">',
+            '    <canvas class="renderer"></canvas>',
+            '    <ng-transclude></ng-transclude>',
+            '</div>'
+        ].join('\n'),
+        controller: ['$scope', function($scope) {
 
-        this._engine.runRenderLoop(() => {
-            this._scene.render();
-        });        
-        jquery(window).on('resize', this._resizeHandler);
-    }
+        }],
+        link: function($scope, $element, $attributes) {
+            let canvas = $element.find('canvas')[0];
+            $scope.engine = new Babylon.Engine(canvas, true);
+            $scope.scene = factory(canvas, $scope.engine, $scope.model);
 
-    destroy() {
-        jquery(window).off('resize', this._resizeHandler);
-        this._engine.dispose();
-    }
-};
+            $scope.engine.runRenderLoop(() => {
+                $scope.scene.render();
+            });
+
+            let resizer = () => {
+                $scope.engine.resize();
+            };
+            jquery(window).on('resize', resizer);
+            $scope.$on('$destroy', () => {
+                jquery(window).off('resize', resizer);
+                $scope.engine.dispose();
+            });
+        }
+    };
+}];
