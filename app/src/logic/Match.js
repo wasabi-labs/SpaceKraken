@@ -9,7 +9,7 @@ export default class {
         this._availableMovements = {};
         this._actions = [];
 
-        for(let i = 0; i < players.length; i++){
+        for (let i = 0; i < players.length; i++){
             this._addTroops(players[i]);
         }
         this._addAvailableMovements(this.currentPlayer);
@@ -38,7 +38,7 @@ export default class {
         // or whatever.
 
         // Move troops
-        if(source.player === target.player) {
+        if (source.player === target.player) {
             this._actions.push(function() {
                 source.troops -= amount;
                 target.troops += amount;
@@ -60,10 +60,10 @@ export default class {
             let attackPower = 0;
             let defensePower = 0;
             let i;
-            for(i = 0; i < amount; i++) {
+            for (i = 0; i < amount; i++) {
                 attackPower += Math.floor((Math.random() * 6) + 1);
             }
-            for(i = 0; i < target.troops; i++) {
+            for (i = 0; i < target.troops; i++) {
                 defensePower += Math.floor((Math.random() * 6) + 1);
             }
             /* Check critics and botchs in each army. By now, it's
@@ -73,14 +73,14 @@ export default class {
                that cases a variable percentage bases on the number of troops
                should work best.
             */
-            if(attackPower > Math.floor(amount * 6 * 0.9)) {
+            if (attackPower > Math.floor(amount * 6 * 0.9)) {
                 attackPower = 9999;
             }
-            if(defensePower > Math.floor(target.troops * 6 * 0.1)) {
+            if (defensePower > Math.floor(target.troops * 6 * 0.1)) {
                 attackPower = 0;
             }
             
-            if(attackPower > defensePower) {
+            if (attackPower > defensePower) {
                 target.player(this.currentPlayer);
                 target.troops = amount;
 
@@ -104,7 +104,7 @@ export default class {
     next() {
         // Execute enqueued actions by the current player
         let results = [];
-        for(let i = 0; i < this._actions.length; i++){
+        for (let i = 0; i < this._actions.length; i++){
             results.push(this._actions[i]());
         }
 
@@ -119,14 +119,14 @@ export default class {
     _addAvailableMovements(player) {
         this._availableMovements = {};
         let planets = this.map.getPlanets(player);
-        for(let i = 0; i < planets.length; i++){
+        for (let i = 0; i < planets.length; i++){
             this._availableMovements[planets[i].name] = planets[i].troops;
         }
     }
 
     _addTroops(player) {
         let planets = this.map.getPlanets(player);
-        for(let i = 0; i < planets.length; i++){
+        for (let i = 0; i < planets.length; i++){
             planets[i].troops = Math.min(planets[i].troopsPerTurn + planets[i].troops, planets[i].maximumTroops);
         }
     }

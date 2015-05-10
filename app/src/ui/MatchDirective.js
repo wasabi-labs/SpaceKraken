@@ -36,6 +36,8 @@ function factory(canvas, engine, match) {
 
         // Planets
         let sphere = Babylon.Mesh.CreateSphere(planet.name, 8, planet.size, scene);
+        
+        sphere.planet = planet;
         sphere.material = materials.planet;
         sphere.position.x = - (map.width / 2) + position.x;
         sphere.position.z = - (map.height / 2) + position.y;
@@ -85,12 +87,23 @@ export default [function() {
             '</div>'
         ].join('\n'),
         controller: ['$scope', function($scope) {
-
+            $scope.selection = null;
+            $scope.select = function(mesh) {
+                if (! $scope.selection) {
+                    $scope.selection = mesh;
+                }
+                else if ($scope.selection === mesh) {
+                    $scope.selection = null;
+                }
+                else {
+                    $scope.model.move($scope.selection.planet, mesh.planet, 1);
+                }
+            };
         }],
         link: function($scope, $element, $attributes) {
-            let canvas = $element.find('canvas')[0];
-            $scope.engine = new Babylon.Engine(canvas, true);
-            $scope.scene = factory(canvas, $scope.engine, $scope.model);
+            $scope.canvas = $element.find('canvas');
+            $scope.engine = new Babylon.Engine($scope.canvas[0], true);
+            $scope.scene = factory($scope.canvas[0], $scope.engine, $scope.model);
 
             $scope.engine.runRenderLoop(() => {
                 $scope.scene.render();
@@ -99,9 +112,19 @@ export default [function() {
             let resizer = () => {
                 $scope.engine.resize();
             };
+            let clicker = () => {
+                let result = $scope.scene.pick($scope.scene.pointerX, $scope.scene.pointerY);
+                if (result.hit) {
+                    $scope.select(result.pickedMesh);
+                }
+            };
+            
             jquery(window).on('resize', resizer);
+            $scope.canvas.on('click', clicker);
+
             $scope.$on('$destroy', () => {
                 jquery(window).off('resize', resizer);
+                $scope.canvas.off('click', clicker);
                 $scope.engine.dispose();
             });
         }
