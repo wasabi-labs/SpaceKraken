@@ -4,7 +4,8 @@ import MatchDirective from './ui/MatchDirective';
 import MatchController from './ui/MatchController';
 
 angular.module('Kraken', [
-    'ngRoute'
+    'ngRoute',
+    'toastr'
 ])
 .directive('match', MatchDirective)
 .controller('MatchController', MatchController)

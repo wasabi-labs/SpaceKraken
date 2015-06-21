@@ -86,7 +86,7 @@ export default [function() {
             '    <ng-transclude></ng-transclude>',
             '</div>'
         ].join('\n'),
-        controller: ['$scope', function($scope) {
+        controller: ['$scope', 'toastr', function($scope, toastr) {
             $scope.selection = null;
             $scope.select = function(mesh) {
                 if (! $scope.selection) {
@@ -96,7 +96,20 @@ export default [function() {
                     $scope.selection = null;
                 }
                 else {
-                    $scope.model.move($scope.selection.planet, mesh.planet, 1);
+                    let source = $scope.selection.planet;
+                    let target = mesh.planet;
+
+                    $scope.model.move(source, target, 1);
+
+                    if (source.player === target.player) {
+                        toastr.info('Movement enqueued')
+                    }
+                    else {
+                        toastr.warning('Attack enqueued')
+                    }
+
+                    $scope.selection = null;
+                    
                 }
             };
         }],

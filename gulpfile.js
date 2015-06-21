@@ -68,6 +68,11 @@ gulp.task('test', function() {
 gulp.task('resources', function() {
     gulp.src(['app/**/*', '!app/src/**'])
         .pipe(gulp.dest('dist/app'));
+    // JS files are concatenated by the minimizer but we still need
+    // css files some times. It doesn't feel good, we should find a
+    // better way.
+    gulp.src(['node_modules/**/*.css'])
+        .pipe(gulp.dest('dist/app/vendor'));
 });
 
 gulp.task('package', ['clean'], function() {
