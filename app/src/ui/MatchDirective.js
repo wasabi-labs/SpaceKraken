@@ -91,6 +91,9 @@ class Hud {
             }
 
             let mesh = ray.pickedMesh;
+            if (! mesh.planet) {
+                return;
+            }
 
             // Selection command
             if (! this.selection) {
@@ -117,7 +120,6 @@ class Hud {
     }
 
     _move(source, target) {
-        console.log(source);
         this.match.move(source, target, 1);
 
         if (source.player === target.player) {
