@@ -5,7 +5,7 @@ import Match from '../logic/Match';
 import Player from '../logic/Player';
 import Planet from '../logic/Planet';
 
-export default ['$scope', '$interval', function($scope, $interval) {
+export default ['$scope', function($scope) {
     // Initialize a sample match
     let player1 = new Player('Fran', '#FF0000');
     let player2 = new Player('Roberto', '#0000FF');
@@ -18,15 +18,15 @@ export default ['$scope', '$interval', function($scope, $interval) {
     let planet2 = new Planet(player1, medium);
     let planet3 = new Planet(player1, medium);
     let planet4 = new Planet(player1, big);
-  
+
     let planet5 = new Planet(player2, small);
     let planet6 = new Planet(player2, medium);
     let planet7 = new Planet(player2, medium);
     let planet8 = new Planet(player2, big);
     let planet9 = new Planet(player2, big);
-  
+
     let map = new Map(20, 20);
-  
+
     map.addPlanet(planet1, 0, 0);
     map.addPlanet(planet2, 5, 3);
     map.addPlanet(planet3, 10, 8);
@@ -36,7 +36,7 @@ export default ['$scope', '$interval', function($scope, $interval) {
     map.addPlanet(planet7, 10, 12);
     map.addPlanet(planet8, 17, 17);
     map.addPlanet(planet9, 15, 9);
-  
+
     map.connect(planet1, planet2);
     map.connect(planet1, planet4);
     map.connect(planet2, planet3);
@@ -49,43 +49,7 @@ export default ['$scope', '$interval', function($scope, $interval) {
     map.connect(planet8, planet5);
     map.connect(planet8, planet6);
     map.connect(planet8, planet9);
-  
+
     let players = [player1, player2];
     $scope.match = new Match(players, map);
-
-    // Set a clock to show the remaining turn time and force
-    // a turn end when the clock reaches 0.
-    $scope.clock = $scope.match.turnTime;
-    $scope.name = $scope.match.currentPlayer.name;
-
-    let start = Date.now();
-    let timer = $interval(function() {
-        let tick = Date.now();
-        $scope.clock = Math.max(
-            $scope.match.turnTime - Math.round((tick - start) / 1000),
-            0);
-        if ($scope.clock === 0) {
-            $scope.endTurn();
-        }
-    }, 250);
-    $scope.$on('$destroy', function() {
-        $interval.cancel(timer);
-    });
-
-    // On each turn end, update the UI for the next
-    // player.
-    $scope.endTurn = function() {
-        let actions = $scope.match.next();
-
-        // For each player action notify the result,
-        // play an animation, etc.
-        actions.forEach(function(action) {
-            console.log(action);
-        });
-
-        start = Date.now();
-
-        $scope.clock = $scope.match.turnTime;
-        $scope.name = $scope.match.currentPlayer.name;
-    }
 }];
