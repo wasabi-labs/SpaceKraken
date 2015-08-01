@@ -94,6 +94,10 @@ class Hud {
 
             // Selection command
             if (! this.selection) {
+                if (mesh.planet.player !== match.currentPlayer) {
+                    return;
+                }
+
                 this.selection = mesh;
                 return;
             }
