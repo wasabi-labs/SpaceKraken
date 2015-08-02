@@ -2,46 +2,91 @@ import Babylon from '../lib/Babylon';
 
 
 export default class Hud {
-    constructor(canvas, scene, match, toastr) {
-        this.canvas = canvas;
+    constructor(scene, map, match, toastr) {
         this.scene = scene;
         this.match = match;
         this.toastr = toastr;
 
+        this.selectionEffect = Babylon.Mesh.CreatePlane('HudSelectionEffect', 1, this.scene);
+        this.selectionEffect.material = new Babylon.StandardMaterial("HudSelectionEffectMaterial", this.scene);
+        this.selectionEffect.material.ambientTexture = new Babylon.Texture('textures/placeholder.png', this.scene);
+        this.selectionEffect.rotation.x = Math.PI / 2;
+        this.selectionEffect.isVisible = false;
+
+        this.hoverEffect = Babylon.Mesh.CreatePlane('HudHoverEffect', 1, this.scene);
+        this.hoverEffect.material = new Babylon.StandardMaterial("HudHoverEffectMaterial", this.scene);
+        this.hoverEffect.material.ambientTexture = new Babylon.Texture('textures/placeholder.png', this.scene);
+        this.hoverEffect.rotation.x = Math.PI / 2;
+        this.hoverEffect.isVisible = false;
+
+        map.planets.forEach(planet => {
+            planet.actionManager = new Babylon.ActionManager(scene);
+            planet.actionManager.registerAction(new Babylon.ExecuteCodeAction(
+                Babylon.ActionManager.OnPickTrigger,
+                (evt) => this._mouseClick(planet)
+            ))
+            planet.actionManager.registerAction(new Babylon.ExecuteCodeAction(
+                Babylon.ActionManager.OnPointerOverTrigger,
+                (evt) => this._mouseOver(planet)
+            ))
+            planet.actionManager.registerAction(new Babylon.ExecuteCodeAction(
+                Babylon.ActionManager.OnPointerOutTrigger,
+                (evt) => this._mouseOut(planet)
+            ))
+        });
+
         this.selection = null;
-        this._click = () => {
-            let ray = scene.pick(scene.pointerX, scene.pointerY);
-            if (! ray.hit) {
-                return;
-            }
+    }
 
-            let mesh = ray.pickedMesh;
-            if (! mesh.planet) {
-                return;
-            }
+    _mouseClick(mesh) {
+        // Ignore enemy planets
+        if (! this.selection && mesh.planet.player !== this.match.currentPlayer) {
+            return;
+        }
 
-            // Selection command
-            if (! this.selection) {
-                if (mesh.planet.player !== match.currentPlayer) {
-                    return;
-                }
+        // Selection command
+        if (! this.selection) {
+            this.selection = mesh.planet;
 
-                this.selection = mesh;
-                return;
-            }
-            // Deselection command
-            if (this.selection === mesh) {
-                this.selection = null;
-                return;
-            }
-            // Movement command
-            let source = this.selection.planet;
-            let target = mesh.planet;
-            this._move(source, target);
+            this.selectionEffect.parent = mesh;
+            this.selectionEffect.scaling.x = mesh.scaling.x * 2;
+            this.selectionEffect.scaling.y = mesh.scaling.y * 2;
+            this.selectionEffect.isVisible = true;
+
+            return;
+        }
+        // Deselection command
+        if (this.selection === mesh.planet) {
             this.selection = null;
-        };
+            this.selectionEffect.parent = null;
+            this.selectionEffect.isVisible = false;
 
-        this.canvas.on('click', this._click);
+            return;
+        }
+        // Movement command
+        this._move(this.selection, mesh.planet);
+
+        this.selection = null;
+        this.selectionEffect.parent = null;
+        this.selectionEffect.isVisible = false;
+    }
+
+    _mouseOver(mesh) {
+        // Ignore enemy planets
+        if (! this.selection && mesh.planet.player !== this.match.currentPlayer) {
+            return;
+        }
+
+        this.hoverEffect.parent = mesh;
+        this.hoverEffect.scaling.x = mesh.scaling.x * 2;
+        this.hoverEffect.scaling.y = mesh.scaling.y * 2;
+        this.hoverEffect.isVisible = true;
+
+    }
+
+    _mouseOut(mesh) {
+        this.hoverEffect.parent = null;
+        this.hoverEffect.isVisible = false;
     }
 
     _move(source, target) {
@@ -60,6 +105,6 @@ export default class Hud {
     }
 
     dispose() {
-        this.canvas.off('click', this._click);
+        // Pass
     }
 }

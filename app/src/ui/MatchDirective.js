@@ -10,7 +10,6 @@ export default ['toastr', function(toastr) {
     return {
         restrict: 'E',
         replace: true,
-        transclude: true,
         scope: {
             model: '='
         },
@@ -77,7 +76,7 @@ export default ['toastr', function(toastr) {
             $scope.scene = new Babylon.Scene($scope.engine);
 
             $scope.map = new Map($scope.scene, $scope.model);
-            $scope.hud = new Hud($scope.canvas, $scope.scene, $scope.model, toastr);
+            $scope.hud = new Hud($scope.scene, $scope.map, $scope.model, toastr);
             $scope.camera = new Camera($scope.canvas, $scope.scene)
 
             $scope.engine.runRenderLoop(() => {

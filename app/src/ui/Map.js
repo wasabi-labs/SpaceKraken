@@ -5,6 +5,7 @@ export default class Map {
     constructor(scene, match) {
         this.scene = scene;
         this.match = match;
+        this.planets = [];
 
         // Light
         this.light = new Babylon.HemisphericLight('AmbientLight', new Babylon.Vector3(0, 1, 0), this.scene);
@@ -38,6 +39,8 @@ export default class Map {
             sphere.material = materials.planet;
             sphere.position.x = - (map.width / 2) + position.x;
             sphere.position.z = - (map.height / 2) + position.y;
+
+            this.planets.push(sphere);
 
             // Paths
             // FIXME: Each connection is drawn twice!
