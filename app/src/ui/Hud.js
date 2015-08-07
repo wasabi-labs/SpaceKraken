@@ -45,7 +45,7 @@ export default class Hud {
         }
 
         // Selection command
-        if (! this.selection) {
+        if (! this.selection && this.match.isSource(mesh.planet)) {
             this.selection = mesh.planet;
 
             this.selectionEffect.parent = mesh;
@@ -64,16 +64,20 @@ export default class Hud {
             return;
         }
         // Movement command
-        this._move(this.selection, mesh.planet);
+        if (this.match.isTarget(this.selection, mesh.planet)) {
+            this._move(this.selection, mesh.planet);
 
-        this.selection = null;
-        this.selectionEffect.parent = null;
-        this.selectionEffect.isVisible = false;
+            this.selection = null;
+            this.selectionEffect.parent = null;
+            this.selectionEffect.isVisible = false;
+        }
     }
 
     _mouseOver(mesh) {
-        // Ignore enemy planets
-        if (! this.selection && mesh.planet.player !== this.match.currentPlayer) {
+        if (! this.selection && ! this.match.isSource(mesh.planet)) {
+            return;
+        }
+        if (this.selection && ! this.match.isTarget(this.selection, mesh.planet)) {
             return;
         }
 

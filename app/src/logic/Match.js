@@ -19,20 +19,47 @@ export default class {
       return this.players[this._currentPlayerNumber];
     }
 
-    move(source, target, amount) {
-        // check constraints
-        if (source.player !== this.currentPlayer || 
-            source.troops - amount < 1 || 
-            ! this.map.isConnected(source, target) || 
-            this._availableMovements[source.name] < amount) {
-
+    isSource(source) {
+        if (source.player !== this.currentPlayer) {
             return false;
         }
-        
-        // if the movement is valid, reduce the amount of available troops for the next movement
+        if (source.troops <= 1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    isTarget(source, target) {
+        if (! this.map.isConnected(source, target)) {
+            return false;
+        }
+        if (this._availableMovements[source.name] < 1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    move(source, target, amount) {
+        // Check constraints
+        if (! this.isSource(source)) {
+            return false;
+        }
+        if (! this.isTarget(source, target)) {
+            return false;
+        }
+        if (source.troops - amount < 1) {
+            return false;
+        }
+        if (this._availableMovements[source.name] < amount) {
+            return false;
+        }
+
+        // If the movement is valid, reduce the amount of available troops for the next movement
         this._availableMovements[source] -= amount;
 
-        // Finally, enqeue the movent into an action list to resolve it 
+        // Then, enqueue the movent into an action list to resolve it
         // at the end of the turn. Each action will return an object describing
         // what happend, so it can be used to inform the user, show an animation,
         // or whatever.
@@ -56,7 +83,7 @@ export default class {
         // Attack a planet
         this._actions.push(function() {
             source.troops -= amount;
-            
+
             let attackPower = 0;
             let defensePower = 0;
             let i;
@@ -79,7 +106,7 @@ export default class {
             if (defensePower > Math.floor(target.troops * 6 * 0.1)) {
                 attackPower = 0;
             }
-            
+
             if (attackPower > defensePower) {
                 target.player(this.currentPlayer);
                 target.troops = amount;
