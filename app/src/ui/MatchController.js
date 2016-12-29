@@ -1,4 +1,4 @@
-import angular from '../lib/Angular';
+import angular from 'angular';
 
 import Map from '../logic/Map';
 import Match from '../logic/Match';

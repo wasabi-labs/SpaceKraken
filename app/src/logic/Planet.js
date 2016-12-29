@@ -3,7 +3,7 @@ const TROOPS_HOSTING_FACTOR = 100;
 
 let id = 0;
 
-export default class {
+export default class Planet {
     constructor(player, size) {
         if (! player) {
             throw new Error('Player is mandatory');

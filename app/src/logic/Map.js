@@ -1,4 +1,4 @@
-export default class {
+export default class Map {
     constructor(width, height) {
         if (! width || width < 1) {
             throw new Error('Width must be bigger than 0');
@@ -20,7 +20,7 @@ export default class {
         if (y === undefined || y < 0 || y >= this.height) {
             throw new Error('Y is out of bounds');
         }
-          
+
         this._planets[planet.name] = {
             planet: planet,
             position: {
@@ -38,12 +38,12 @@ export default class {
             throw new Error('Planet2 not in Map');
         }
         if (this._connections[planet1.name] === undefined) {
-            this._connections[planet1.name] = {}; 
+            this._connections[planet1.name] = {};
         }
         if (this._connections[planet2.name] === undefined) {
-            this._connections[planet2.name] = {};  
+            this._connections[planet2.name] = {};
         }
-          
+
         this._connections[planet1.name][planet2.name] = true;
         this._connections[planet2.name][planet1.name] = true;
     }
@@ -65,7 +65,7 @@ export default class {
     getPosition(planet) {
         return this._planets[planet.name].position;
     }
-  
+
     getPlanets(player) {
         let result = [];
 
@@ -75,7 +75,7 @@ export default class {
                 result.push(planet);
             }
         });
-      
+
         return result;
     }
 }

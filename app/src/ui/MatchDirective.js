@@ -1,5 +1,8 @@
-import jquery from '../lib/JQuery';
-import Babylon from '../lib/Babylon';
+import jquery from 'jquery';
+import {
+  Engine,
+  Scene,
+} from 'babylonjs';
 
 import Map from './Map';
 import Hud from './Hud';
@@ -72,8 +75,8 @@ export default ['toastr', function(toastr) {
         }],
         link: function($scope, $element, $attributes) {
             $scope.canvas = $element.find('canvas');
-            $scope.engine = new Babylon.Engine($scope.canvas[0], true);
-            $scope.scene = new Babylon.Scene($scope.engine);
+            $scope.engine = new Engine($scope.canvas[0], true);
+            $scope.scene = new Scene($scope.engine);
 
             $scope.map = new Map($scope.scene, $scope.model);
             $scope.hud = new Hud($scope.scene, $scope.map, $scope.model, toastr);

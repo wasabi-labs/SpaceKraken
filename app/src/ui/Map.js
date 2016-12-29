@@ -1,4 +1,11 @@
-import Babylon from '../lib/Babylon';
+import {
+  Color3,
+  HemisphericLight,
+  Mesh,
+  StandardMaterial,
+  Texture,
+  Vector3,
+} from 'babylonjs';
 
 
 export default class Map {
@@ -8,22 +15,22 @@ export default class Map {
         this.planets = [];
 
         // Light
-        this.light = new Babylon.HemisphericLight('AmbientLight', new Babylon.Vector3(0, 1, 0), this.scene);
+        this.light = new HemisphericLight('AmbientLight', new Vector3(0, 1, 0), this.scene);
         this.light.intensity = 0.75;
-        this.scene.clearColor = new Babylon.Color3(0, 0, 0);
+        this.scene.clearColor = new Color3(0, 0, 0);
 
         // Materials
         let materials = {
-            planet: new Babylon.StandardMaterial("PlanetMaterial", this.scene),
-            path: new Babylon.StandardMaterial("PathMaterial", this.scene),
-            ground: new Babylon.StandardMaterial("GroundMaterial", this.scene)
+            planet: new StandardMaterial('PlanetMaterial', this.scene),
+            path: new StandardMaterial('PathMaterial', this.scene),
+            ground: new StandardMaterial('GroundMaterial', this.scene)
         }
 
         let placeholder = 'textures/placeholder.png';
-        materials.planet.diffuseColor = new Babylon.Color3(0.2, 0.6, 1.0);
-        materials.planet.ambientTexture = new Babylon.Texture(placeholder, this.scene);
-        materials.path.diffuseColor = new Babylon.Color3(0.75, 1.0, 0.75);
-        materials.path.ambientTexture = new Babylon.Texture(placeholder, this.scene);
+        materials.planet.diffuseColor = new Color3(0.2, 0.6, 1.0);
+        materials.planet.ambientTexture = new Texture(placeholder, this.scene);
+        materials.path.diffuseColor = new Color3(0.75, 1.0, 0.75);
+        materials.path.ambientTexture = new Texture(placeholder, this.scene);
         materials.path.alpha = 0.5;
         materials.ground.wireframe = true;
 
@@ -33,7 +40,7 @@ export default class Map {
             let position = map.getPosition(planet);
 
             // Planets
-            let sphere = Babylon.Mesh.CreateSphere(planet.name, 8, planet.size, this.scene);
+            let sphere = Mesh.CreateSphere(planet.name, 8, planet.size, this.scene);
 
             sphere.planet = planet;
             sphere.material = materials.planet;
@@ -52,7 +59,7 @@ export default class Map {
                 let dy = position.y - other.y;
                 let hy = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
-                let path = Babylon.Mesh.CreatePlane(planet.name + connection.name + 'Path', 1, this.scene);
+                let path = Mesh.CreatePlane(planet.name + connection.name + 'Path', 1, this.scene);
                 path.material = materials.path;
                 path.parent = sphere;
 
@@ -66,7 +73,7 @@ export default class Map {
         });
 
         // Debug ground
-        let ground = Babylon.Mesh.CreateGround('Ground', map.width, map.height, Math.max(map.width, map.height), this.scene);
+        let ground = Mesh.CreateGround('Ground', map.width, map.height, Math.max(map.width, map.height), this.scene);
         ground.material = materials.ground;
     }
 

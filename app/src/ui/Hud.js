@@ -1,4 +1,10 @@
-import Babylon from '../lib/Babylon';
+import {
+  Mesh,
+  Texture,
+  StandardMaterial,
+  ActionManager,
+  ExecuteCodeAction,
+} from 'babylonjs';
 
 
 export default class Hud {
@@ -7,33 +13,30 @@ export default class Hud {
         this.match = match;
         this.toastr = toastr;
 
-        this.selectionEffect = Babylon.Mesh.CreatePlane('HudSelectionEffect', 1, this.scene);
-        this.selectionEffect.material = new Babylon.StandardMaterial("HudSelectionEffectMaterial", this.scene);
-        this.selectionEffect.material.ambientTexture = new Babylon.Texture('textures/placeholder.png', this.scene);
+        this.selectionEffect = Mesh.CreatePlane('HudSelectionEffect', 1, this.scene);
+        this.selectionEffect.material = new StandardMaterial('HudSelectionEffectMaterial', this.scene);
+        this.selectionEffect.material.ambientTexture = new Texture('textures/placeholder.png', this.scene);
         this.selectionEffect.rotation.x = Math.PI / 2;
         this.selectionEffect.isVisible = false;
 
-        this.hoverEffect = Babylon.Mesh.CreatePlane('HudHoverEffect', 1, this.scene);
-        this.hoverEffect.material = new Babylon.StandardMaterial("HudHoverEffectMaterial", this.scene);
-        this.hoverEffect.material.ambientTexture = new Babylon.Texture('textures/placeholder.png', this.scene);
+        this.hoverEffect = Mesh.CreatePlane('HudHoverEffect', 1, this.scene);
+        this.hoverEffect.material = new StandardMaterial('HudHoverEffectMaterial', this.scene);
+        this.hoverEffect.material.ambientTexture = new Texture('textures/placeholder.png', this.scene);
         this.hoverEffect.rotation.x = Math.PI / 2;
         this.hoverEffect.isVisible = false;
 
-        map.planets.forEach(planet => {
-            planet.actionManager = new Babylon.ActionManager(scene);
-            planet.actionManager.registerAction(new Babylon.ExecuteCodeAction(
-                Babylon.ActionManager.OnPickTrigger,
-                (evt) => this._mouseClick(planet)
-            ))
-            planet.actionManager.registerAction(new Babylon.ExecuteCodeAction(
-                Babylon.ActionManager.OnPointerOverTrigger,
-                (evt) => this._mouseOver(planet)
-            ))
-            planet.actionManager.registerAction(new Babylon.ExecuteCodeAction(
-                Babylon.ActionManager.OnPointerOutTrigger,
-                (evt) => this._mouseOut(planet)
-            ))
-        });
+        for (let planet of map.planets) {
+            planet.actionManager = new ActionManager(scene);
+            planet.actionManager.registerAction(new ExecuteCodeAction(
+              ActionManager.OnPickTrigger, (evt) => this._mouseClick(planet)
+            ));
+            planet.actionManager.registerAction(new ExecuteCodeAction(
+                ActionManager.OnPointerOverTrigger, (evt) => this._mouseOver(planet)
+            ));
+            planet.actionManager.registerAction(new ExecuteCodeAction(
+                ActionManager.OnPointerOutTrigger, (evt) => this._mouseOut(planet)
+            ));
+        }
 
         this.selection = null;
     }

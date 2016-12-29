@@ -1,4 +1,7 @@
-import angular from './lib/Angular';
+import angular from 'angular';
+import 'angular-route/angular-route';
+import 'angular-toastr/dist/angular-toastr';
+import 'angular-toastr/dist/angular-toastr.tpls';
 
 import MatchDirective from './ui/MatchDirective';
 import MatchController from './ui/MatchController';

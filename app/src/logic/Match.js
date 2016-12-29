@@ -1,6 +1,6 @@
 const DEFAULT_TURN_TIME = 30;
 
-export default class {
+export default class Match {
     constructor(players, map) {
         this.players = players;
         this.map = map;
