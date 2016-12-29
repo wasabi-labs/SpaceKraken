@@ -7,9 +7,8 @@ var path = require('path');
 var clean = require('gulp-clean');
 var jshint = require('gulp-jshint');
 var browserify = require('browserify');
-var es6ify = require('es6ify');
 var source = require('vinyl-source-stream');
-var traceur = require('gulp-traceur');
+var babel = require('gulp-babel');
 var header = require('gulp-header');
 var filter = require('gulp-filter');
 var merge = require('merge-stream');
@@ -39,21 +38,21 @@ gulp.task('lint', function() {
 
 gulp.task('build', ['lint'], function() {
     return browserify({
-            entries: [es6ify.runtime, './app/src/index.js'],
+            entries: ['./app/src/index.js'],
             debug: true
         })
-        .transform(es6ify.configure(/^(?!.*node_modules)+.+\.js$/))
+        .transform('babelify', { presets: ['es2015'], sourceMaps: true })
         .bundle()
-        .pipe(source(pack.name + '.js'))
-        .pipe(gulp.dest('dist/app/js'));
+        .pipe(source('kraken.js'))
+        .pipe(gulp.dest('dist/app/js'))
 });
 
 gulp.task('test', function() {
     var src = gulp.src('app/src/**/*.js')
-        .pipe(traceur())
+        .pipe(babel({ presets: ['es2015'] }))
         .pipe(gulp.dest('dist/test/src'));
     var test = gulp.src('test/*/**/*.js')
-        .pipe(traceur())
+        .pipe(babel({ presets: ['es2015'] }))
         .pipe(header(fs.readFileSync('test/Runner.js', 'utf8')))
         .pipe(gulp.dest('dist/test/test'));
     return merge(src, test)
