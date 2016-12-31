@@ -1,10 +1,10 @@
 export default class Player {
-    constructor(name, color) {
-        this.name = name;
-        this.color = color;
-    }
+  constructor(name, color) {
+    this.name = name;
+    this.color = color;
+  }
 
-    toString() {
-        return this.name;
-    }
+  toString() {
+    return this.name;
+  }
 }
